@@ -127,69 +127,6 @@
 		
 		// aamarpay payment gateway required code End
 		
-
-	/** 
-	* since all these data has to be passed back to foundation after making the payment you need to save these data
-	*	
-	* You can make a database entry with all the required details which has been passed from foundation.  
-	*
-	*							OR
-	*	
-	* keep the data to the session which will be available in postpayment.php as we have done here.
-	*
-	* It is recommended that you make database entry.
-	**/
-
-		
-
-		
-		$_SESSION['redirecturl']=$redirectUrl;
-		$_SESSION['transid']=$transId;
-		$_SESSION['sellingcurrencyamount']=$sellingCurrencyAmount;
-		$_SESSION['accountingcurencyamount']=$accountingCurrencyAmount;
-
-
-		
-		echo "Verified<br>";
-		echo "List of Variables Received as follows<br>";
-		echo "Paymenttypeid : ".$paymentTypeId."<br>";
-		echo "transid : ".$transId."<br>";
-		echo "userid : ".$userId."<br>";
-		echo "usertype : ".$userType."<br>";
-		echo "transactiontype : ".$transactionType."<br>";
-		echo "invoiceids : ".$invoiceIds."<br>";
-		echo "debitnoteids : ".$debitNoteIds."<br>";
-		echo "description : ".$description."<br>";
-		echo "sellingcurrencyamount : ".$sellingCurrencyAmount."<br>";
-		echo "accountingcurrencyamount : ".$accountingCurrencyAmount."<br>";
-		echo "redirecturl : ".$redirectUrl."<br>";
-		echo "checksum : ".$checksum."<br><br>";
-?>
-
-<form name="paymentpage" action="postpayment.php">
-    <input type="hidden" name="status" value="Y">
-    <input type="button" name="btnSuccess" onClick="successClicked();" value="Continue Test of a Successful Transaction"><br>
-    <input type="button" name="btnPending" onClick="pendingClicked();" value="Continue Test of a Pending Transaction"><br>
-    <input type="button" name="btnFailed" onClick="failClicked();" value="Continue Test of a Failed Transaction"><br>
-</form>
-
-<?php
-
-		}
-		else
-		{
-			/**This message will be dispayed in any of the following case
-			*
-			* 1. You are not using a valid 32 bit secure key from your Reseller Control panel
-			* 2. The data passed from foundation has been tampered.
-			*
-			* In both these cases the customer has to be shown error message and shound not
-			* be allowed to proceed  and do the payment.
-			*
-			**/
-
-			echo "Checksum mismatch !";			
-
 		}
 ?>
 </body>
