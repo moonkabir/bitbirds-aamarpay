@@ -5,6 +5,7 @@
 		
 <html>
 <head><title>Payment Page </title>
+
 <script language="JavaScript">
         function successClicked()
         {
@@ -23,7 +24,7 @@
 </script>
 </head>
 <body bgcolor="white">
-
+<style>h2 {text-align: center;}</style>
 <?php
 		
 	$key = "C9rYiQd98eTmUBcdMxRvMVkHFEtGjer3"; //replace ur 32 bit secure key , Get your secure key from your Reseller Control panel
@@ -32,8 +33,8 @@
 	$_GET = filter_var_array($_GET, FILTER_SANITIZE_STRING);
 	
 	//Below are the  parameters which will be passed from foundation as http GET request
-	$paymentTypeId = $_GET["paymenttypeid"];  //payment type id
-	$transId = $_GET["transid"];			   //This refers to a unique transaction ID which we generate for each transaction
+	$paymentTypeId = $_GET["paymenttypeid"];  //payment type id 
+	$transid_reseller = $_GET["transid"];			   //This refers to a unique transaction ID which we generate for each transaction
 	$userId = $_GET["userid"];               //userid of the user who is trying to make the payment
 	$userType = $_GET["usertype"];  		   //This refers to the type of user perofrming this transaction. The possible values are "Customer" or "Reseller"
 	$transactionType = $_GET["transactiontype"];  //Type of transaction (ResellerAddFund/CustomerAddFund/ResellerPayment/CustomerPayment)
@@ -53,28 +54,34 @@
 	$country = $_GET["country"];
 	$telNo = $_GET["telNo"];
 	$zip = $_GET["zip"];	
-	// create a random value for transaction id
-	function rand_string( $length ) {
-		$str="";
-		$chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		$size = strlen( $chars );
-		for( $i = 0; $i < $length; $i++) { $str .= $chars[ rand( 0, $size - 1 ) ]; }
-		return $str;
-	}	
-	$cur_random_value=rand_string(10);	
 
 	//checksum for validation
 	$checksum = $_GET["checksum"];
 
-	//database file all data store before payment being processing 
-	include('payment_dbfile.php');
-
-	echo "File paymentpage.php<br>";
-	echo "Checksum Verification..............";
-
+    echo "<h2>Redirecting..............</h2>";
+		
 	// verify checksum then code goes
-	if(verifyChecksum($paymentTypeId, $transId, $userId, $userType, $transactionType, $invoiceIds, $debitNoteIds, $description, $sellingCurrencyAmount, $accountingCurrencyAmount, $key, $checksum)){
+	if(verifyChecksum($paymentTypeId, $transid_reseller, $userId, $userType, $transactionType, $invoiceIds, $debitNoteIds, $description, $sellingCurrencyAmount, $accountingCurrencyAmount, $key, $checksum)){
 		//YOUR CODE GOES HERE
+		
+		// create a random value for transaction id
+    	function rand_string( $length ) {
+    		$str="";
+    		$chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    		$size = strlen( $chars );
+    		for( $i = 0; $i < $length; $i++) { $str .= $chars[ rand( 0, $size - 1 ) ]; }
+    		return $str;
+    	}	
+    	$cur_random_value=rand_string(10);
+		
+		//database file all data store before payment being processing
+		include('payment_dbfile.php');
+		
+		
+    	$invoiceIds = $_GET["invoiceids"] ? $_GET["invoiceids"] : '123456789' ;		   //comma separated Invoice Ids, This will have a value only if the transactiontype is "ResellerPayment" or "CustomerPayment"
+    	$debitNoteIds = $_GET["debitnoteids"] ? $_GET["debitnoteids"] : '987654321';	   //comma separated DebitNotes Ids, This will have a value only if the transactiontype is "ResellerPayment" or "CustomerPayment"
+    	$description = $_GET["description"] ? $_GET["description"] : 'bitbirds.biz add fund';
+		
 		
 		// aamarpay payment gateway required code start here 
 
@@ -87,15 +94,16 @@
 			</script></head>
 			<body onLoad="closethisasap();">
 			
-				<form name="redirectpost" method="post" action="<?php echo 'https://sandbox.aamarpay.com/'.$url; ?>"></form>
+				<form name="redirectpost" method="post" action="<?php echo '  https://secure.aamarpay.com/'.$url; ?>"></form>
 			</body>
 			</html>
 		<?php	
 			exit;
 		} 
-		$url = 'https://sandbox.aamarpay.com/request.php';
+		$sucess_url = 'https://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/postpayment.php';
+		$url = ' https://secure.aamarpay.com/request.php';
 		$fields = array(
-			'store_id' => 'aamarpay', 'amount' => $sellingCurrencyAmount, 'payment_type' => 'VISA',
+			'store_id' => 'pencilbox', 'amount' => $sellingCurrencyAmount, 'payment_type' => 'VISA',
 			'currency' => 'BDT', 'tran_id' => "$cur_random_value",
 			'cus_name' => $name, 'cus_email' => $emailAddr,
 			'cus_add1' => $address1, 'cus_add2' => $address2,
@@ -105,12 +113,12 @@
 			'ship_add1' => 'House B-121, Road 21', 'ship_add2' => 'Mohakhali',
 			'ship_city' => 'Dhaka', 'ship_state' => 'Dhaka',
 			'ship_postcode' => '1212', 'ship_country' => 'Bangladesh',
-			'desc' => "test_description", 'success_url' => 'https://bitbirds.com/postpayment.php',
-			'fail_url' => 'http://localhost/edu/fail.php',
-			'cancel_url' => 'http://localhost/edu/cancel.php',
-			'opt_a' => $transId, 'opt_b' => $redirectUrl,
+			'desc' => "test_description", 'success_url' => $sucess_url,
+			'fail_url' => $sucess_url,
+			'cancel_url' => $sucess_url,
+			'opt_a' => $transid_reseller, 'opt_b' => $redirectUrl,
 			'opt_c' => $accountingCurrencyAmount, 'opt_d' => '',
-			'signature_key' => '28c78bb1f45112f5d40b956fe104645a');
+			'signature_key' => 'afa63456363176d698fd44c83f8a6960');
 		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
 		$fields_string = rtrim($fields_string, '&'); 
 		$ch = curl_init();

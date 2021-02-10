@@ -14,9 +14,9 @@ if (!$connection) {
     $cus_name = $a['cus_name']??'';
     $cus_email = $a['cus_email']??'';
     $cus_add1 = $a['opt_a']??'';
-    $cus_add2 = $a['opt_b']??'';
     $cus_city = $a['opt_c']??'';
-    $cus_state = $a['opt_d']??'';
+    $tran_id_reseller = $a['opt_d']??'';
+    $redirectUrl = $a['opt_b']??'';
     $cus_phone = $a['cus_phone']??'';
     $desc = $a['desc']??'';
     $pay_status = $a['pay_status']??'';
@@ -33,8 +33,19 @@ if (!$connection) {
     $ip = $a['ip']??'';
     $verify_status = $a['verify_status']??'';
 
-    if($tran_id && $mer_txnid && $amount && $cus_name && $cus_email && $cus_add1 && $cus_add2 && $cus_city && $cus_state && $cus_phone && $desc && $pay_status && $status_code && $cardnumber && $approval_code && $payment_processor && $bank_trxid && $payment_type && $error_code && $date_processed && $processing_charge && $ip && $verify_status){
-        $query = "INSERT INTO `post_payment`(`tran_id`, `mer_txnid`, `amount`, `cus_name`, `cus_email`, `cus_add1`, `cus_add2`, `cus_city`, `cus_state`, `cus_phone`, `description`, `pay_status`, `status_code`, `cardnumber`, `approval_code`, `payment_processor`, `bank_trxid`, `payment_type`, `error_code`, `date_processed`, `rec_amount`, `processing_charge`, `ip`, `verify_status`) VALUES ('{$tran_id}','{$mer_txnid}','{$amount}','{$cus_name}','{$cus_email}','{$cus_add1}','{$cus_add2}','{$cus_city}','{$cus_state}','{$cus_phone}','{$desc}','{$pay_status}','{$status_code}','{$cardnumber}','{$approval_code}','{$payment_processor}','{$bank_trxid}','{$payment_type}','{$error_code}','{$date_processed}','{$rec_amount}','{$processing_charge}','{$ip}','{$verify_status}')";
+    // if($tran_id && $mer_txnid && $amount && $cus_name && $cus_email && $cus_add1 && $cus_city && $tran_id_reseller && $redirectUrl && $cus_phone && $desc && $pay_status && $status_code && $cardnumber && $approval_code && $payment_processor && $bank_trxid && $payment_type && $error_code && $date_processed && $processing_charge && $ip && $verify_status){
+        $query = "INSERT INTO `post_payment`(`tran_id`, `mer_txnid`, `amount`, `cus_name`, `cus_email`, `cus_add1`, `cus_city`, `tran_id_reseller`, `redirectUrl`, `cus_phone`, `description`, `pay_status`, `status_code`, `cardnumber`, `approval_code`, `payment_processor`, `bank_trxid`, `payment_type`, `error_code`, `date_processed`, `rec_amount`, `processing_charge`, `ip`, `verify_status`) VALUES ('{$tran_id}','{$mer_txnid}','{$amount}','{$cus_name}','{$cus_email}','{$cus_add1}','{$cus_city}','{$tran_id_reseller}','{$redirectUrl}','{$cus_phone}','{$desc}','{$pay_status}','{$status_code}','{$cardnumber}','{$approval_code}','{$payment_processor}','{$bank_trxid}','{$payment_type}','{$error_code}','{$date_processed}','{$rec_amount}','{$processing_charge}','{$ip}','{$verify_status}')";
+        // echo "<pre>Debug: $query</pre>\n";
         mysqli_query($connection, $query);
-    }
+        // $result = mysqli_query($connection, $query);
+        // if ( false===$result ) {
+        //     printf("error: %s\n", mysqli_error($connection));
+        // }
+        // else {
+        //     echo 'done.';
+        // }
+    // }else{
+    //     echo "Payment file missing"; 
+    //     die();
+    // }
 }

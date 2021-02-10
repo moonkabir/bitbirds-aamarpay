@@ -1,0 +1,7 @@
+[07-Feb-2021 07:22:35 UTC] PHP Warning:  Use of undefined constant HTTP_HOST - assumed 'HTTP_HOST' (this will throw an Error in a future version of PHP) in /home/bitbirdc/public_html/custom_payment/postpayment.php on line 84
+[07-Feb-2021 07:23:24 UTC] PHP Warning:  Use of undefined constant HTTP_HOST - assumed 'HTTP_HOST' (this will throw an Error in a future version of PHP) in /home/bitbirdc/public_html/custom_payment/postpayment.php on line 84
+[07-Feb-2021 07:24:04 UTC] PHP Warning:  Use of undefined constant HTTP_HOST - assumed 'HTTP_HOST' (this will throw an Error in a future version of PHP) in /home/bitbirdc/public_html/custom_payment/postpayment.php on line 84
+[07-Feb-2021 07:31:41 UTC] PHP Warning:  Use of undefined constant HTTP_HOST - assumed 'HTTP_HOST' (this will throw an Error in a future version of PHP) in /home/bitbirdc/public_html/custom_payment/postpayment.php on line 84
+[07-Feb-2021 07:31:50 UTC] PHP Warning:  Use of undefined constant HTTP_HOST - assumed 'HTTP_HOST' (this will throw an Error in a future version of PHP) in /home/bitbirdc/public_html/custom_payment/postpayment.php on line 84
+[07-Feb-2021 07:44:48 UTC] PHP Warning:  Use of undefined constant HTTP_HOST - assumed 'HTTP_HOST' (this will throw an Error in a future version of PHP) in /home/bitbirdc/public_html/custom_payment/postpayment.php on line 84
+[07-Feb-2021 07:53:20 UTC] PHP Warning:  Use of undefined constant HTTP_HOST - assumed 'HTTP_HOST' (this will throw an Error in a future version of PHP) in /home/bitbirdc/public_html/custom_payment/postpayment.php on line 84

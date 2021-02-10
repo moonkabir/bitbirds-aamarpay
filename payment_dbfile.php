@@ -8,8 +8,11 @@ if (!$connection) {
     echo "Cannot connect to database";
     throw new Exception( "Cannot connect to database" );
 }else {
-    if($name && $emailAddr && $address1 && $city && $state && $country && $telNo && $zip && $cur_random_value && $checksum && $redirectUrl && $accountingCurrencyAmount && $sellingCurrencyAmount && $description && $debitNoteIds && $invoiceIds && $transactionType && $userType && $userId && $transId && $paymentTypeId ){
-        $query = "INSERT INTO `payment`(`name`, `emailAddr`, `address1`, `city`, `state`, `country`, `telNo`, `zip`, `tran_id`, `checksum`, `redirecturl`, `showingamount`, `pay_amount`, `description`, `debitnoteids`, `invoiceids`, `transactiontype`, `usertype`, `userId`, `transid`, `paymenttypeid`) VALUES ('{$name}','{$emailAddr}','{$address1}','{$city}','{$state}','{$country}','{$telNo}','{$zip}','{$cur_random_value}','{$checksum}','{$redirectUrl}','{$accountingCurrencyAmount}','{$sellingCurrencyAmount}','{$description}','{$debitNoteIds}','{$invoiceIds}','{$transactionType}','{$userType}','{$userId}','{$transId}','{$paymentTypeId}')"; 
+    // if($name && $emailAddr && $address1 && $city && $state && $country && $telNo && $zip && $cur_random_value && $checksum && $redirectUrl && $accountingCurrencyAmount && $sellingCurrencyAmount && $description && $debitNoteIds && $invoiceIds && $transactionType && $userType && $userId && $transid_reseller && $paymentTypeId ){
+        $query = "INSERT INTO `payment`(`name`, `emailAddr`, `address1`, `city`, `state`, `country`, `telNo`, `zip`, `tran_id`, `checksum`, `redirecturl`, `accountingCurrencyAmount`, `sellingCurrencyAmount`, `description`, `debitnoteids`, `invoiceids`, `transactiontype`, `usertype`, `userId`, `transid_reseller`, `paymenttypeid`) VALUES ('{$name}','{$emailAddr}','{$address1}','{$city}','{$state}','{$country}','{$telNo}','{$zip}','{$cur_random_value}','{$checksum}','{$redirectUrl}','{$accountingCurrencyAmount}','{$sellingCurrencyAmount}','{$description}','{$debitNoteIds}','{$invoiceIds}','{$transactionType}','{$userType}','{$userId}','{$transid_reseller}','{$paymentTypeId}')"; 
         mysqli_query($connection, $query);
-    }
+    // }else{
+    //     echo "Please provide all the proper value"; 
+    //     die();
+    // }
 }

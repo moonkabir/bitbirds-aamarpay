@@ -1,6 +1,6 @@
 <?php 
 	 session_start();
-	 session_save_path("./"); //path on your server where you are storing session
+// 	 session_save_path("./"); //path on your server where you are storing session
 	//file which has required functions
 	require("functions.php");	
  ?>
@@ -8,13 +8,14 @@
 <head><title>Post Payment</title></head>
 <body bgcolor="white">
 <font size=4>
-
+<style>h2 {text-align: center;}</style>
 <?php
+    // aamarpay data after payment start
 	if($_POST['pay_status']=="Successful"){
 		$merTxnId= $_POST['mer_txnid']; 
 	}
 	$curl_handle=curl_init();
-	curl_setopt($curl_handle,CURLOPT_URL,"https://sandbox.aamarpay.com/api/v1/trxcheck/request.php?request_id=$merTxnId&store_id=aamarpay&signature_key=28c78bb1f45112f5d40b956fe104645a &type=json");
+	curl_setopt($curl_handle,CURLOPT_URL," https://secure.aamarpay.com/request.php?request_id=$merTxnId&store_id=pencilbox&signature_key=afa63456363176d698fd44c83f8a6960&type=json");
 
 	curl_setopt($curl_handle, CURLOPT_VERBOSE, true);
 	curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
@@ -22,10 +23,18 @@
 	$buffer = curl_exec($curl_handle);
 	curl_close($curl_handle);
 	$a = (array)json_decode($buffer);
+    // aamarpay data after payment end
 
 	$key = "C9rYiQd98eTmUBcdMxRvMVkHFEtGjer3"; //replace ur 32 bit secure key , Get your secure key from your Reseller Control panel
 
-	$transId = $a['opt_a'];		 //Pass the same transid which was passsed to your Gateway URL at the beginning of the transaction.
+
+    $merchant_trans_id = $a['mer_txnid'];
+    $transId = $a['opt_a'];		 //Pass the same transid which was passsed to your Gateway URL at the beginning of the transaction.
+    
+    // db file after payment  
+	include('postpayment_dbfile.php');
+    
+	
 	//Call data from database in the payment table
 	define('DB_SERVER','localhost');
 	define('DB_USER','bitbirdc_resellerclub');
@@ -36,8 +45,8 @@
 		echo "Cannot connect to database";
 		throw new Exception( "Cannot connect to database" );
 	}else {
-		if($transId){
-			$query = "SELECT * FROM `payment` WHERE `tran_id` = '{$transId}'";
+		if($merchant_trans_id){
+			$query = "SELECT * FROM `payment` WHERE `tran_id` = '{$merchant_trans_id}'";
 			$result = mysqli_query($connection,$query);
             if(mysqli_num_rows($result)>0){
 				$data = mysqli_fetch_assoc($result);
@@ -45,15 +54,12 @@
 				$sellingCurrencyAmount = $data['sellingCurrencyAmount'];
 				$accountingCurrencyAmount = $data['accountingCurrencyAmount'];
 			}
+		}else{
+		    $redirectUrl = "https://manage.resellerclub.com/servlet/TestCustomPaymentAuthCompletedServlet";
 		}
 	}
 
-	// $redirectUrl = $a['opt_b'];  // redirectUrl received from foundation
-	// // $transId = $a['opt_a'];		 //Pass the same transid which was passsed to your Gateway URL at the beginning of the transaction.
-	// $sellingCurrencyAmount = $a['amount'];
-	// $accountingCurrencyAmount = $a['opt_c'];
-
-	if($a['pay_status'] = "Successful"){
+	if("Successful" == $a['pay_status']){
 		$status = "Y";
 	}else{
 		$status = "N";
@@ -74,19 +80,21 @@
 
 	$checksum =generateChecksum($transId,$sellingCurrencyAmount,$accountingCurrencyAmount,$status, $rkey,$key);
 
-	echo "File: postpayment.php<br>";
-	echo "redirecturl: ".$redirectUrl."<br>";
-	echo "List of Variables to send back<br>";
-	echo "transid : ".$transId."<br>";
-	echo "status : ".$status."<br>";
-	echo "rkey : ".$rkey."<br>";
-	echo "checksum : ".$checksum."<br><br>";
+// 	echo "File: postpayment.php<br>";
+// 	echo "redirecturl: ".$redirectUrl."<br>";
+// 	echo "List of Variables to send back<br>";
+// 	echo "transid : ".$transId."<br>";
+// 	echo "status : ".$status."<br>";
+// 	echo "rkey : ".$rkey."<br>";
+// 	echo "checksum : ".$checksum."<br><br>";
+    // echo 'https://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/postpayment.php';
+    
 	
-	// db file after payment  
-	include('postpayment_dbfile.php');
-
+    echo "<h2 >you are auto redirecting......</h2>";
+    echo "<h2>if not please click continue to redirect</h2>"
 ?>
-	<form name="f1" action="<?php echo $redirectUrl;?>">
+
+	<form name="f1"  id="yourform" action="<?php echo $redirectUrl;?>">
 		<input type="hidden" name="transid" value="<?php echo $transId;?>">
 		<input type="hidden" name="status" value="<?php echo $status;?>">
 		<input type="hidden" name="rkey" value="<?php echo $rkey;?>">
@@ -96,19 +104,12 @@
 		<input type="submit" value="Click here to Continue"><BR>
 	</form>
 	
-	<script>
-		var form = $('<form name="f1" action="<?php echo $redirectUrl;?>">' +
-			'<input type="hidden" name="transid" value="<?php echo $transId;?>">' +
-			'<input type="hidden" name="status" value="<?php echo $status;?>">' +
-			'<input type="hidden" name="rkey" value="<?php echo $rkey;?>">' +
-			'<input type="hidden" name="checksum" value="<?php echo $checksum;?>">' +
-			'<input type="hidden" name="sellingamount" value="<?php echo $sellingCurrencyAmount;?>">' +
-			'<input type="hidden" name="accountingamount" value="<?php echo $accountingCurrencyAmount;?>">' +
-			'</form>');
-		$('body').append(form);
-		$(form).submit();
-		window.location.href = "<?php echo $redirectUrl ?>";
-	</script>
+    <script>            
+        document.addEventListener("DOMContentLoaded", function(event) {
+            document.createElement('form').submit.call(document.getElementById('yourform'));
+        });         
+    </script>
+    
 </font>
 </body>
 </html>
